@@ -5,17 +5,18 @@ import Header from "../Components/Header";
 
 
 import { useNavigate } from "react-router-dom";
+import {getTexts} from '../Firebase/TextService';
 
-const CardBook = ({ID, LinkFoto, Nombre, Paterno, Materno, Titulo }) => {
+const CardBook = (t) => {
     const navigate = useNavigate();
     return (
-        <div className="bg-[rgb(9,88,160)] text-wrap w-[95%] mx-auto rounded-md flex flex-row justify-center items-center py-5" onClick={()=>{navigate(`/information/${ID}`)}}>
+        <div key={t.id} className="bg-[rgb(9,88,160)] text-wrap w-[95%] mx-auto rounded-md flex flex-row justify-center items-center py-5" onClick={()=>{navigate(`/information/${t?.id}`)}}>
             <picture className="w-[100px] h-[90%] border-secondary-a border-2">
-                <img src={LinkFoto} className="h-[100%] w-screen object-cover" alt={Titulo} />
+                <img src={t?.Portada} className="h-[100%] w-screen object-cover" alt={t.Titulo} />
             </picture>
             <div className="w-48 text-center text-white">
-                <h2 className="text-lg">{Titulo}</h2>
-                <h2 className="my-1 text-sm">{`${Nombre} ${Paterno} ${Materno}`}</h2>
+                <h2 className="text-lg">{t?.Titulo}</h2>
+                <h2 className="my-1 text-sm">{`${t?.AUTOR?.NOMBRE} ${t?.AUTOR?.PATERNO} ${t?.AUTOR?.MATERNO}`}</h2>
             </div>
         </div>
     )
@@ -27,19 +28,7 @@ const Books = () => {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_IP}/texto/biblioteca`);
-                if (res.data) {
-                    setLibros(res.data);
-                    setLoading(false);
-                }
-            } catch (err) {
-                console.log("Error en la petición: " + err);
-                setLoading(false);
-            }
-        };
-        fetchData();
+        getTexts().then((res)=>{setLibros(res);setLoading(false)});
     }, []);
 
     const handleSearch = (e) => {

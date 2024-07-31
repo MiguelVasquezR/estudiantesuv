@@ -6,6 +6,8 @@ import Header from '../Components/Header';
 import { IoMdArrowBack } from "react-icons/io";
 import Ubicacion from "../Components/Ubicacion";
 
+import {getTextByID} from '../Firebase/TextService';
+
 const Información = () => {
     
     const navigate = useNavigate();
@@ -19,15 +21,8 @@ const Información = () => {
     }
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
-            .then((res) => {
-                setData(res.data);
-                setUbiacion(JSON.parse(res.data.Ubicacion));
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+
+        getTextByID(id).then((res) => {setData(res)}).finally(() => setIsLoading(false));
     }, []);
 
     return (
@@ -46,11 +41,11 @@ const Información = () => {
                         <section className=' flex flex-col justify-center items-center gap-5 mx-auto w-[90%] lg:flex-row'>
 
                             <div className='shadow-md flex flex-row justify-center items-center gap-5 rounded-md text-center w-[100%] max-w-[500px] lg:w-[50%] lg:h-[500px] lg:flex-col'>
-                                <picture><img src={`${data?.LinkFoto}`} className="rounded-md w-[150px] h-[180px] object-fill lg:w-[300px] lg:h-[330px]" /></picture>
+                                <picture><img src={`${data?.Portada}`} className="rounded-md w-[150px] h-[180px] object-fill lg:w-[300px] lg:h-[330px]" /></picture>
                                 <article className='flex flex-col gap-1 pb-1'>
                                     <h2 className='text-2xl font-bold'>{data?.Titulo}</h2>
                                     <h2 className='text-sm'>{data?.Codigo}</h2>
-                                    <h2 className='text-sm'>{data?.Nombre} {data?.Paterno} {data?.Materno}</h2>
+                                    <h2 className='text-sm'>{data?.AUTOR?.NOMBRE} {data?.AUTOR?.PATERNO} {data?.AUTOR?.MATERNO}</h2>
                                     <h2 className='text-sm'>{data?.Tipo}</h2>
                                 </article>
                             </div>
@@ -63,7 +58,7 @@ const Información = () => {
                         </section>
                         <div className='w-[90%] xl:w-[40%] mx-auto xl:my-5 '>
                             <h2 className='text-xl font-bold'>Ubicación</h2>
-                            <Ubicacion size={ubicacion?.repisa === '1' ? 4 : 6} col={ubicacion.columna} row={ubicacion.fila} />
+                            <Ubicacion size={data?.Ubicacion?.repisa === '1' ? 4 : 6} col={data?.Ubicacion.columna} row={data?.Ubicacion.fila} />
                         </div>
 
                     </>

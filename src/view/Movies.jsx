@@ -3,6 +3,8 @@ import axios from 'axios';
 import Cargando from '../Components/Loading/Loading';
 import Header from '../Components/Header';
 
+import { getMovies } from '../Firebase/MovieService';
+
 const Videoteca = () => {
     const [peliculas, setPeliculas] = useState([]);
     const [generos, setGeneros] = useState([]);
@@ -10,28 +12,12 @@ const Videoteca = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [peliculasResponse, generosResponse] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE_IP}/pelicula/listar`),
-                    axios.get(`${import.meta.env.VITE_IP}/genero/listar-generos`)
-                ]);
-
-                setPeliculas(peliculasResponse.data || []);
-                setGeneros(generosResponse.data || []);
-            } catch (error) {
-                console.error("Error en la petición:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
+        getMovies().then((res) => { setPeliculas(res); setLoading(false) });
     }, []);
 
     const filteredMovies = useMemo(() => {
         return peliculas.filter(pelicula =>
-            pelicula.Titulo.toLowerCase().includes(search.toLowerCase())
+            pelicula.titulo.toLowerCase().includes(search.toLowerCase())
         );
     }, [peliculas, search]);
 
@@ -50,36 +36,32 @@ const Videoteca = () => {
             <section className='grid grid-cols-1 gap-5 px-5 mb-5 md:grid-cols-2 xl:grid-cols-3'>
                 {!loading && filteredMovies.length > 0 ? (
                     filteredMovies.map((pelicula) => (
-                        <div key={pelicula.ID} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto'>
-                            <img src={pelicula.LinkFoto} alt={pelicula.Titulo} className='h-[220px] w-[200px] object-fill rounded-md' />
+                        <div key={pelicula.id} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto'>
+                            <img src={pelicula.portada} alt={pelicula.titulo} className='h-[220px] w-[200px] object-fill rounded-md' />
                             <article className='flex flex-col justify-center gap-1'>
-                                <p className='text-[12px] font-bold'>{pelicula.Titulo}</p>
+                                <p className='text-[12px] font-bold'>{pelicula.titulo}</p>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Código:</p>
-                                    <p className='text-[10px]'>{pelicula.Codigo}</p>
+                                    <p className='text-[10px]'>{pelicula.codigo}</p>
                                 </div>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Autor:</p>
-                                    <p className='text-[10px]'>{`${pelicula.Nombre} ${pelicula.Paterno} ${pelicula.Materno || ''}`}</p>
+                                    <p className='text-[10px]'>{`${pelicula.AUTOR.Nombre} ${pelicula.AUTOR.Paterno} ${pelicula.AUTOR.Materno || ''}`}</p>
                                 </div>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Formato:</p>
-                                    <p className='text-[10px]'>{pelicula.Tipo}</p>
+                                    <p className='text-[10px]'>{pelicula.tipo.toUpperCase()}</p>
                                 </div>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Tipo:</p>
-                                    <p className='text-[10px]'>{pelicula.Proviene}</p>
+                                    <p className='text-[10px]'>{pelicula.origen.toUpperCase()}</p>
                                 </div>
                                 <section>
                                     <h4 className='text-[12px] font-bold'>Género</h4>
                                     <div className='flex flex-row items-center justify-center gap-1'>
-                                        {generos
-                                            .filter(genero => genero.IDPelicula === pelicula.ID && genero.Nombre)
-                                            .map(genero => (
-                                                <p key={genero.ID} className='text-[8px] bg-primary p-1 rounded-md text-secondary-a mt-1'>
-                                                    {genero.Nombre}
-                                                </p>
-                                            ))}
+                                        {
+                                            pelicula.GENEROS.map((genero, index) => { return <p key={index} className='text-[8px] bg-blue-500 text-white p-1 rounded-md text-secondary-a mt-1'>{genero}</p> })
+                                        }
                                     </div>
                                 </section>
                             </article>
@@ -87,7 +69,7 @@ const Videoteca = () => {
                     ))
                 ) : (
                     <div className='text-2xl font-bold text-center'>
-                        
+
                     </div>
                 )}
             </section>
