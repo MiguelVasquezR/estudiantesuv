@@ -10,13 +10,13 @@ import {getTexts} from '../Firebase/TextService';
 const CardBook = (t) => {
     const navigate = useNavigate();
     return (
-        <div key={t.id} className="bg-[rgb(9,88,160)] text-wrap w-[95%] mx-auto rounded-md flex flex-row justify-center items-center py-5" onClick={()=>{navigate(`/information/${t?.id}`)}}>
-            <picture className="w-[100px] h-[90%] border-secondary-a border-2">
-                <img src={t?.Portada} className="h-[100%] w-screen object-cover" alt={t.Titulo} />
+        <div key={t.id} className="bg-[rgb(9,88,160)] text-wrap w-[95%] mx-auto rounded-md flex flex-row justify-between items-center p-5" onClick={()=>{navigate(`/information/${t?.id}`)}}>
+            <picture className="w-[120px] h-[140px] border-secondary-a border-2 rounded-md">
+                <img src={t?.Portada} className="h-[100%] w-screen object-cover rounded-md" alt={t.Titulo} />
             </picture>
             <div className="w-48 text-center text-white">
-                <h2 className="text-lg">{t?.Titulo}</h2>
-                <h2 className="my-1 text-sm">{`${t?.AUTOR?.NOMBRE} ${t?.AUTOR?.PATERNO} ${t?.AUTOR?.MATERNO}`}</h2>
+                <h2 className="text-[15px]">{t?.Titulo}</h2>
+                <h2 className="my-1 text-[12px] font-bold">{`${t?.AUTOR?.NOMBRE} ${t?.AUTOR?.PATERNO} ${t?.AUTOR?.MATERNO}`}</h2>
             </div>
         </div>
     )
@@ -51,7 +51,7 @@ const Books = () => {
                     placeholder="Buscar"
                 />
             </form>
-            <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            <section className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
                 {loading ? <Loading /> : librosFiltrados.map(libro => <CardBook key={libro.ID} {...libro} />)}
             </section>
         </>

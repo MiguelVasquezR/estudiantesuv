@@ -33,11 +33,11 @@ const Videoteca = () => {
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </form>
-            <section className='grid grid-cols-1 gap-5 px-5 mb-5 md:grid-cols-2 xl:grid-cols-3'>
+            <section className='grid grid-cols-1 gap-5 mb-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-flow-col-5'>
                 {!loading && filteredMovies.length > 0 ? (
                     filteredMovies.map((pelicula) => (
-                        <div key={pelicula.id} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto'>
-                            <img src={pelicula.portada} alt={pelicula.titulo} className='h-[220px] w-[200px] object-fill rounded-md' />
+                        <div key={pelicula.id} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto my-5'>
+                            <img src={pelicula.portada} alt={pelicula.titulo} className='h-[220px] w-[200px] object-contain rounded-md' />
                             <article className='flex flex-col justify-center gap-1'>
                                 <p className='text-[12px] font-bold'>{pelicula.titulo}</p>
                                 <div>
